@@ -1,4 +1,6 @@
 class CommentsController < ApplicationController
+  before_filter :be_happy, :only => [:create]
+
   # POST /comments
   # POST /comments.json
   def create
@@ -26,5 +28,13 @@ class CommentsController < ApplicationController
       format.html { redirect_to @comment.article }
       format.json { head :no_content }
     end
+  end
+
+  private
+
+  def be_happy
+    @article.title.gsub!(/sad/,"happy")
+    @article.body.gsub!(/sad/,"happy")
+    @comment.body.gsub!(/sad/,"happy")
   end
 end

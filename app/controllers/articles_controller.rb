@@ -1,9 +1,11 @@
 class ArticlesController < ApplicationController
+  before_filter :load_article
+  before_filter :title_upcase, :only => [:index]
+  around_filter :error
+
   # GET /articles
   # GET /articles.json
   def index
-    @articles = Article.all
-
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @articles }
@@ -13,6 +15,7 @@ class ArticlesController < ApplicationController
   # GET /articles/1
   # GET /articles/1.json
   def show
+    raise "My little error"
     @article  = Article.includes(:comments).find(params[:id])
 
     respond_to do |format|
@@ -34,7 +37,6 @@ class ArticlesController < ApplicationController
 
   # GET /articles/1/edit
   def edit
-    @article = Article.find(params[:id])
   end
 
   # POST /articles
@@ -56,7 +58,6 @@ class ArticlesController < ApplicationController
   # PUT /articles/1
   # PUT /articles/1.json
   def update
-    @article = Article.find(params[:id])
 
     respond_to do |format|
       if @article.update_attributes(params[:article])
@@ -72,12 +73,38 @@ class ArticlesController < ApplicationController
   # DELETE /articles/1
   # DELETE /articles/1.json
   def destroy
-    @article = Article.find(params[:id])
     @article.destroy
 
     respond_to do |format|
       format.html { redirect_to articles_url }
       format.json { head :no_content }
+    end
+  end
+
+  private
+
+  def load_article
+    @article = Article.find(params[:id]) if params[:id]
+  end
+
+  def title_upcase
+    @articles = Article.all
+
+    @articles.each do |article|
+      article.title = article.title.upcase
+    end
+  end
+
+  def error
+    begin
+      yield
+    rescue Exception => e
+      flash[:notice] = "Sorry, #{e} was received for action #{params[:action]}"
+      unless params[:action] == 'index'
+        redirect_to :action => 'index'
+      else
+        render :action => 'index'
+      end
     end
   end
 end
