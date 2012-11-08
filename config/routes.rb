@@ -1,10 +1,20 @@
 SimpleBlog::Application.routes.draw do
 
+  devise_for :users, :controllers => { :confirmations => "confirmatios" } do
+    put "confirm_user", :to => "confirmations#confirm_user"
+    get "confirmation", :to => "confirmations#show"
+  end
+
+
   root to: 'articles#index'
 
   resources :articles do
     resources :comments, only: [:create, :destroy]  
   end
+
+  match '/auth/:provider/callback', :to => 'sessions#create'
+  match "/login" => redirect("/auth/twitter"), :as => :login
+  match "/logout" => "sessions#destroy", :as => :logout
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -2,6 +2,7 @@ class ArticlesController < ApplicationController
   before_filter :load_article
   before_filter :title_upcase, :only => [:index]
   around_filter :error
+  before_filter :authenticate_user!, :except => [:show, :index]
 
   # GET /articles
   # GET /articles.json
@@ -15,7 +16,6 @@ class ArticlesController < ApplicationController
   # GET /articles/1
   # GET /articles/1.json
   def show
-    raise "My little error"
     @article  = Article.includes(:comments).find(params[:id])
 
     respond_to do |format|

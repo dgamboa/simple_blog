@@ -6,7 +6,10 @@ gem 'rails', '3.2.8'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3'
-
+gem 'devise'
+gem 'cancan'
+gem 'omniauth'
+gem 'omniauth-twitter'
 
 # Gems used only for assets and not required
 # in production environments by default.

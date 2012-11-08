@@ -5,8 +5,12 @@
       <%= raw truncate(article.body, length: 200, separator: '...') %>
       <br>
       <%= link_to 'Show', article %> | 
-      <%= link_to 'Edit', edit_article_path(article) %> | 
-      <%= link_to 'Destroy', article, method: :delete, data: { confirm: 'Are you sure?' } %>
+      <%= link_to 'Edit', edit_article_path(article) %> 
+      <% logger.info { "current_user: #{current_user}" } %>
+      <% logger.info { "can? :destroy: #{ can? :destroy, current_user}" } %>
+      <% if can? :destroy, article %>
+         | <%= link_to 'Destroy', article, method: :delete, data: { confirm: 'Are you sure?' } %>
+      <% end %>
     </p>
   </div>
 <% end %>
